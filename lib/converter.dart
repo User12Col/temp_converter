@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class ConvertScreen extends StatefulWidget {
   const ConvertScreen({Key? key}) : super(key: key);
 
@@ -28,9 +29,39 @@ class _ConvertScreenState extends State<ConvertScreen> {
   String result = 'Show result';
   final TextEditingController _inputController = TextEditingController();
   final TextEditingController _outputController = TextEditingController();
+
+  void eventOnClick(){
+    if(_inputController.text.isEmpty){
+      Fluttertoast.showToast(
+        msg: 'Please enter your value',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+      );
+    } else{
+      double degree = double.parse(_inputController.text);
+      if(_optionValue == OptionConvert.ctof){
+        double rs = (degree*9.0/5.0)+32.0;
+        setState(() {
+          _outputController.text = rs.toString();
+          result = result + '\nC to F: '+_outputController.text;
+        });
+      } else{
+        double rs = (degree-32.0)*5.0/9.0;
+        setState(() {
+          _outputController.text = rs.toString();
+          result = result + '\nF to C: '+_outputController.text;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Converter'),
         centerTitle: false,
@@ -50,6 +81,7 @@ class _ConvertScreenState extends State<ConvertScreen> {
                         setState(() {
                           _optionValue = value;
                         });
+
                       }),
                 ),
                 ListTile(
@@ -88,33 +120,7 @@ class _ConvertScreenState extends State<ConvertScreen> {
               ],
             ),
             TextButton(
-              onPressed: () {
-                if(_inputController.text.isEmpty){
-                  Fluttertoast.showToast(
-                    msg: 'Please enter your value',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.grey,
-                    textColor: Colors.white,
-                  );
-                } else{
-                  double degree = double.parse(_inputController.text);
-                  if(_optionValue == OptionConvert.ctof){
-                    double rs = (degree*9.0/5.0)+32.0;
-                    setState(() {
-                      _outputController.text = rs.toString();
-                      result = result + '\nC to F: '+_outputController.text;
-                    });
-                  } else{
-                    double rs = (degree-32.0)*5.0/9.0;
-                    setState(() {
-                      _outputController.text = rs.toString();
-                      result = result + '\nF to C: '+_outputController.text;
-                    });
-                  }
-                }
-              },
+              onPressed: eventOnClick,
               child: Container(
                 child: Text('CONVERT', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                 decoration: BoxDecoration(
